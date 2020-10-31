@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
-// N-bit Counter
-// lecture: practice in digital logic design
-// for week2 A2
+//                     N-bit Counter
+// Course: practice in digital logic design
+// Assignment: for week2 A2
 // --------------------- list ---------------------
 // N-bit Counter
 // ----------------------------------------------------------
