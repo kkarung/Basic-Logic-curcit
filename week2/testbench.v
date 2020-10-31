@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
-// Test bench
-// lecture: practice in digital logic design
-// week2 practice 01,02 / assignment 01,02
+//                       Test bench
+// Course: practice in digital logic design
+// Assignment: week2 practice 01,02 / assignment 01,02
 // --------------------- list ---------------------
 // tb for P1
 // tb2 for P2
