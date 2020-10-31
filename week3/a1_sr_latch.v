@@ -4,7 +4,6 @@
 // week3 assignment P1
 // --------------------- list ---------------------
 // A1 : SR Latch based DFF Design (Gate Level Description)
-// P1B : 3:8 Decoder w/ case statement
 // ---------------------------------------------------------
 
 // ------------------------------------------------------
