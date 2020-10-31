@@ -1,6 +1,6 @@
 // ---------------------------------------------------------
 // 4:1 MUX design with 3 different Coding Style
-// lecture: PRACTICE IN DIGITAL LOGIC DESIGN
+// lecture: practice in digital logic design, Sookmyung Women's University
 // week2 assignment A1
 // --------------------- list ---------------------
 // 2:1 MUX (Dataflow)
