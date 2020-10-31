@@ -1,12 +1,16 @@
-
-
-// + 2:1 MUX (Dataflow)
+// ---------------------------------------------------------
+// 4:1 MUX design with 3 different Coding Style
+// lecture: PRACTICE IN DIGITAL LOGIC DESIGN
+// week2 assignment A1
+// --------------------- list ---------------------
+// 2:1 MUX (Dataflow)
 // A1: 4:1 MUX Design Using 3 x 2:1 MUX
-// + 4:1 MUX Design Using if
-// + 4:1 MUX Design Using case
+// 4:1 MUX Design Using if
+// 4:1 MUX Design Using case
+// ---------------------------------------------------------
 
 // ------------------------------------------------
-// + 2:1 MUX (Dataflow)
+// 2:1 MUX (Dataflow)
 // ------------------------------------------------
 module	mux2(	y, d0, d1, s	)	;
 
@@ -45,7 +49,7 @@ mux2	mux_2	( .y ( y ), .d0 ( node1 ), .d1 ( node2 ), .s ( s[1] ));
 endmodule
 
 // ------------------------------------------------
-// + 4:1 MUX Design Using if
+// 4:1 MUX Design Using if
 // ------------------------------------------------
 module mux4_if (	y, d0, d1, d2, d3, s	);
 
@@ -74,7 +78,7 @@ end
 endmodule
 
 // ------------------------------------------------
-// + 4:1 MUX Design Using case
+// 4:1 MUX Design Using case
 // ------------------------------------------------
 module mux4_case (	y, d0, d1, d2, d3, s	);
 
