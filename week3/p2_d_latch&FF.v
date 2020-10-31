@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
 // Latch & DFF Design
 // lecture: practice in digital logic design
-// week3 assignment P2
+// week3 practice P2
 // --------------------- list ---------------------
 // P2A : D Latch w/ reset
 // P2B : D Flip-Flop (DFF) w/ Async & Sync. Reset
