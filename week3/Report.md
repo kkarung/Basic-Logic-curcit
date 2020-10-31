@@ -9,7 +9,3 @@
 ## A1
 #### A1 - wave form
 ![W03A101](https://github.com/kkarung/Basic-Logic-curcit/blob/main/image/W03A101.PNG)
-
-## A2
-#### A2
-![W03A201]()
