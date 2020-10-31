@@ -1,15 +1,15 @@
 // ---------------------------------------------------------
-// NCO (Numerical Controlled Oscillator) design
+// FND(Flexible Numeric Display) Decoder
 // lecture: practice in digital logic design
 // week4 practice P3
 // FND Decoder: 7 segment display >> more details... https://dokkodai.tistory.com/89
 // --------------------- list ---------------------
-// P3: FND(Flexible Numeric Display) Decoder
+// P3: FND Decoder
 // FND decoder instance for FPGA
 // ---------------------------------------------------------
 
 // ------------------------------------------------
-// P3: FND(Flexible Numeric Display) Decoder
+// P3: FND Decoder
 // ------------------------------------------------
 module	fnd_dec ( o_seg, i_num );
 
