@@ -1,3 +1,15 @@
+// ---------------------------------------------------------
+//                       Test bench
+// Course: practice in digital logic design
+// Assignment: week3 practice 01,02 / assignment 01,02
+// --------------------- list ---------------------
+// tb for P1
+// tb2 for P2
+// tb3 for A1
+// tb4 for A2
+// ----------------------------------------------------------
+
+
 module tb;
 // ------------------------------------------------
 // instance
