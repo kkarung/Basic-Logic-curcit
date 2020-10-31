@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
-// Subject: FND Design including DOT
-// Assignment: week4 assignment A2
+//                FND Design including DOT
 // Course: practice in digital logic design
+// Assignment: week4 assignment A2
 // --------------------- list ---------------------
 // A2: FND Display - DP
 // FND decoder instance for FPGA
