@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
 // 3:8 Decoder Design with 2 different Coding Style
 // lecture: practice in digital logic design
-// week3 assignment P1
+// week3 practice P1
 // --------------------- list ---------------------
 // P1A : 3:8 Decode w/ continuous assignment
 // P1B : 3:8 Decoder w/ case statement
