@@ -2,6 +2,7 @@
 // NCO (Numerical Controlled Oscillator) design
 // lecture: practice in digital logic design
 // week4 practice P1
+// nco: digital signal generator e.g. clock
 // --------------------- list ---------------------
 // P1: Numerical Controlled Oscillator
 // ---------------------------------------------------------
