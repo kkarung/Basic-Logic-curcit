@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
-// 4:1 MUX design with 3 different Coding Style
-// lecture: practice in digital logic design
-// week2 assignment A1
+//       4:1 MUX design with 3 different Coding Style
+// Course: practice in digital logic design
+// Assignment: week2 assignment A1
 // --------------------- list ---------------------
 // 2:1 MUX (Dataflow)
 // A1: 4:1 MUX Design Using 3 x 2:1 MUX
