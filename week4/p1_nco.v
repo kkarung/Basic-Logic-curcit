@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
 // NCO (Numerical Controlled Oscillator) design
 // lecture: practice in digital logic design
-// week4 assignment P1
+// week4 practice P1
 // --------------------- list ---------------------
 // P1: Numerical Controlled Oscillator
 // ---------------------------------------------------------
