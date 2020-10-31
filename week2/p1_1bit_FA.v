@@ -1,12 +1,12 @@
 // ---------------------------------------------------------
 // 1-bit Full Adder (FA) Design with 3 different Coding Style
-// lecture: PRACTICE IN DIGITAL LOGIC DESIGN
+// lecture: practice in digital logic design
 // week2 practice 01 P1A, P1B, P1C
 // --------------------- list ---------------------
 // P1A: 1bit Full adder (Dataflow Style)
 // P1B: 1bit Full adder (Behavior Style)
 // P1C: 1bit Full-Adder (Case, concatenation)
-// + 1-bit Full-Adder (Dataflow w/ Operator) << easy
+// 1-bit Full-Adder (Dataflow w/ Operator) << easy
 // ----------------------------------------------------------
 
 // ------------------------------------------------
