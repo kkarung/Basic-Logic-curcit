@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Subject: NCO + counter Design
+//                  NCO + counter Design
 // Course: practice in digital logic design
 // Assignment: week4 assignment A1
 // --------------------- list ---------------------
