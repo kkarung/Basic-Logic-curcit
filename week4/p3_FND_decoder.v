@@ -2,6 +2,7 @@
 // NCO (Numerical Controlled Oscillator) design
 // lecture: practice in digital logic design
 // week4 practice P3
+// FND Decoder: 7 segment display >> more details... https://dokkodai.tistory.com/89
 // --------------------- list ---------------------
 // P3: FND(Flexible Numeric Display) Decoder
 // FND decoder instance for FPGA
