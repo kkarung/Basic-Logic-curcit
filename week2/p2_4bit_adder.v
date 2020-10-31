@@ -1,6 +1,6 @@
 // ---------------------------------------------------------
 // 4-bit Adder Design
-// lecture: PRACTICE IN DIGITAL LOGIC DESIGN
+// lecture: practice in digital logic design
 // week2 practice 02 P2A, P2B
 // --------------------- list ---------------------
 // 1-bit Full-Adder (Dataflow w/ Operator)
