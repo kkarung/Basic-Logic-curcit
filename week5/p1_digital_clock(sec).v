@@ -127,7 +127,7 @@ end
 endmodule
 
 // ------------------------------------------------
-// P1F: LED display
+// LED display
 // ------------------------------------------------
 module	led_disp ( o_seg, o_seg_dp, o_seg_enb, i_six_digit_seg, i_six_dp, clk, rst_n );
 
