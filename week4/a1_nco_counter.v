@@ -2,6 +2,7 @@
 // NCO (Numerical Controlled Oscillator) design
 // lecture: practice in digital logic design
 // week4 assignment A1
+// connect NCO + counter
 // MUST INCLUDE nco.v, counter_59.v
 // --------------------- list ---------------------
 // A1: NCO + Counter Design
