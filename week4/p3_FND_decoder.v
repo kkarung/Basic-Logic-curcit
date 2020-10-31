@@ -4,6 +4,7 @@
 // week4 practice P3
 // --------------------- list ---------------------
 // P3: FND(Flexible Numeric Display) Decoder
+// FND decoder instance for FPGA
 // ---------------------------------------------------------
 
 // ------------------------------------------------
@@ -38,6 +39,9 @@ always	@(*)	begin
 end
 endmodule
 
+// ------------------------------------------------
+// FND decoder instance for FPGA
+// ------------------------------------------------
 module	fnd_dec_fpga ( o_com, o_seg );
 
 output	[5:0]	o_com	;	// common cathod
