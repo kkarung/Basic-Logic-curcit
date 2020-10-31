@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
-// NCO + counter Design
-// lecture: practice in digital logic design
-// week4 assignment A1
+// Subject: NCO + counter Design
+// Course: practice in digital logic design
+// Assignment: week4 assignment A1
 // --------------------- list ---------------------
 // NCO
 // 0~59 Counter
