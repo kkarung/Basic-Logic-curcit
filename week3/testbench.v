@@ -71,3 +71,72 @@ initial begin
 #(50)	$finish;
 end
 endmodule
+module tb3;
+// ------------------------------------------------
+// instance
+// ------------------------------------------------
+
+reg	d	;
+reg	clk	;
+
+wire	q	;
+wire	q_n	;
+
+initial		clk = 1'b0	;
+always	#(100)	clk = ~clk	;
+
+dff_sr	dut_0	( .q ( q ), .q_n ( q_n ), .d ( d ), .clk ( clk ));
+
+// ------------------------------------------------
+// stimulus
+// ------------------------------------------------
+
+initial begin
+#(0)	d = 1'b0;
+#(50)	d = 1'b0;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b0;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b0;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(50)	d = 1'b0;	#(50)	$display("%b\t%b\t%b\t%b", q, q_n, d, clk);
+#(5)	$finish;
+end
+endmodule
+
+module tb4;
+// ------------------------------------------------
+// instance
+// ------------------------------------------------
+reg		rst_n	;
+reg		clk	;
+wire	[3:0]	q	;
+
+initial		clk = 1'b0	;
+always	#(100)	clk = ~clk	;
+
+counter_4	dut_0 ( .q ( q ), .rst_n ( rst_n ), .clk ( clk ));
+
+// ------------------------------------------------
+// stimulus
+// ------------------------------------------------
+
+initial begin
+#(0)	rst_n = 1'b0;
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b1", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b2", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b3", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b4", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b5", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b6", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b7", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b8", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b9", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b0", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b1", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b2", q[3], q[2], q[1], q[0]);
+#(50)	rst_n = 1'b1;	#(50)	$display("%b\t%b\t%b\t%b3", q[3], q[2], q[1], q[0]);
+#(50)	$finish;
+end
+
+endmodule
