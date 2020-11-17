@@ -228,6 +228,6 @@ wire	[41:0]	i_six_digit_seg	;
 
 assign		i_six_digit_seg = { {4{7'b0000000}}, o_seg_left, o_seg_right };
 
-led_disp	u_lef_disp ( .o_seg ( o_seg ), .o_seg_dp ( o_seg_dp ), .o_seg_enb ( o_seg_enb ), .i_six_digit_seg ( i_six_digit_seg ), .i_six_dp ( 6'd0 ), .clk ( clk ), .rst_n ( rst_n ));
+led_disp	u_led_disp ( .o_seg ( o_seg ), .o_seg_dp ( o_seg_dp ), .o_seg_enb ( o_seg_enb ), .i_six_digit_seg ( i_six_digit_seg ), .i_six_dp ( 6'd0 ), .clk ( clk ), .rst_n ( rst_n ));
 
 endmodule
