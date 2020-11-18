@@ -5,16 +5,27 @@
 // clock (min:sec), changing mode ok, debounce
 // --------------------- list ---------------------
 // 1. NCO (1M Hz) << week5 P1
-// 2. 0~59 Counter << week5 P1
-// 3. NCO_CNT (0~59 sec) << week5 P1
-// 4. double figure separate ( tens digit / units digits ) << week5 P1
-// 5. FND decoder << week5 P1
-// 6. LED display << week5 P1
+// 2. double figure separate ( tens digit / units digits ) << week5 P1
+// 3. FND decoder << week5 P1
+// 4. LED display << week5 P1
 // PA: HMS counter (Hour, Minute, Second each counter)
 // PB: Hour, Minute, Second total counter
 // PC: Controller for sec_clk, min_clk & mode/position
 // PD: Top module
 // PE: Debounce
+// ---------------------------------------------------------
+
+// 01. NCO (1M Hz) << week5 P1
+// 02. double figure separate ( tens digit / units digits ) << week5 P1
+// 03. FND decoder << week5 P1
+// 04. LED display << week5 P1
+// 05. HMS counter (Hour, Minute, Second each counter)
+// 06. HMS down counter (Hour, Minute, Second each counter)
+// 07. Hour, Minute, Second total counter
+// 08. Controller for sec_clk, min_clk & mode/position
+// 09. Top module
+// 10. Debounce
+// 11. buzz
 // ---------------------------------------------------------
 
 // ------------------------------------------------
@@ -43,46 +54,6 @@ always	@(posedge clk or negedge rst_n) begin
 		end
 	end
 end
-endmodule
-
-// ------------------------------------------------
-// 0~59 Counter
-// ------------------------------------------------
-
-module cnt60( out, clk, rst_n );
-
-output	[5:0]	out	;
-input		clk	;
-input		rst_n	;
-reg	[5:0]	out	;
-
-always 	@(posedge clk or negedge rst_n) begin
-	if (rst_n == 1'b0) begin
-		out <= 6'b0	;
-	end else begin
-		if (out >= 6'd59) begin
-			out <= 6'd0;
-		end else begin
-			out <= out + 1'b1;
-		end
-	end
-end
-endmodule
-
-// ------------------------------------------------
-// NCO_CNT ( 0 ~ 59 sec )
-// ------------------------------------------------
-module nco_cnt ( o_nco_cnt, i_nco_num, clk, rst_n );
-
-output	[5:0]	o_nco_cnt	;
-input	[31:0]	i_nco_num	;
-input		clk		;
-input		rst_n		;
-wire		clk_gen		;
-
-nco	nco_1 ( .clk_gen ( clk_gen ), .num ( i_nco_num ), .clk ( clk ), .rst_n ( rst_n ));
-cnt60	cnt_1 ( .out ( o_nco_cnt ), .clk ( clk_gen ), .rst_n ( rst_n ));
-
 endmodule
 
 // ---------------------------------------------------------
@@ -206,7 +177,7 @@ end
 endmodule
 
 // ---------------------------------------------------
-// PA: HMS counter (Hour, Minute, Second each counter)
+// HMS counter (Hour, Minute, Second each counter)
 // ---------------------------------------------------
 module hms_cnt ( o_hms_cnt, o_max_hit, i_max_cnt, clk, rst_n );
 
@@ -236,53 +207,53 @@ end
 endmodule
 
 // ------------------------------------------------
-// PB: Hour, Minute, Second total counter
+// Hour, Minute, Second total counter
 // ------------------------------------------------
-module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, i_sec_clk, i_min_clk, clk, rst_n );
+module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, 
+		i_sec_clk, i_min_clk, clk, rst_n );
 
 output	[5:0]	o_sec	;
 output	[5:0]	o_min	;
-output		o_max_hit_sec	;
-output		o_max_hit_min	;
+output		o_max_hit_sec	;	// CLOCK mode - sec carry clk
+output		o_max_hit_min	;	// CLOCK mode - min carry clk
+
 input		i_sec_clk	;
 input		i_min_clk	;
 input		clk		;
 input		rst_n		;
 
-wire		max_hit_sec	;	// why?
-wire		max_hit_min	;	// why?
+// MODE: CLOCK counter
 hms_cnt		u0_hms_cnt ( .o_hms_cnt ( o_sec ), .o_max_hit ( o_max_hit_sec ), .i_max_cnt ( 6'd59 ), .clk ( i_sec_clk ), .rst_n ( rst_n ) ); // sec counter
 hms_cnt		u1_hms_cnt ( .o_hms_cnt ( o_min ), .o_max_hit ( o_max_hit_min ), .i_max_cnt ( 6'd59 ), .clk ( i_min_clk ), .rst_n ( rst_n ) ); // min counter
 
 endmodule
 
 // ---------------------------------------------------
-// PC: Controller for sec_clk, min_clk & mode/position
+// Controller for sec_clk, min_clk & mode/position
 // ---------------------------------------------------
-module controller ( o_mode, o_position, o_min_clk, o_sec_clk, i_sw0, i_sw1, i_sw2, i_max_hit_sec, i_max_hit_min, clk, rst_n );
+module controller ( o_min_clk, o_sec_clk, 
+			i_sw0, i_sw1, i_sw2, i_max_hit_sec, clk, rst_n );
 
-output		o_mode		;
-output		o_position	;
 output		o_min_clk	; // No [5:0], since it is just clock purse
 output		o_sec_clk	; // No [5:0], since it is just clock purse
 
+input		i_max_hit_sec	;
 input		i_sw0		; // switch 0
 input		i_sw1		; // switch 1
 input		i_sw2		; // switch 2
-input		i_max_hit_sec	;
-input		i_max_hit_min	;
+
 input		clk		;
 input		rst_n		;
 
-parameter	MODE_CLOCK = 1'b0;
-parameter	MODE_SETUP = 1'b1;
+parameter	MODE_CLOCK	= 2'b00	;
+parameter	MODE_SETUP	= 2'b01	;
 
 parameter	POS_SEC = 1'b0;
 parameter	POS_MIN	= 1'b1;
 
 // DEBOUNCE
 wire	clk_slow		;
-nco	u_nco_db ( .clk_gen ( clk_slow ), .num ( 32'd500000 ), .clk ( clk ), .rst_n ( rst_n));
+nco	u_nco_db ( .clk_gen ( clk_slow ), .num ( 32'd500000 ), .clk ( clk ), .rst_n ( rst_n ));
 
 wire	sw0	;
 wire	sw1	;
@@ -294,31 +265,31 @@ debounce	u2_debounce ( .o_sw ( sw2 ), .i_sw ( i_sw2 ), .clk ( clk_slow ) );
 
 reg		o_mode		;
 
+// SWITCH 0: MODE
 always	@(posedge sw0 or negedge rst_n) begin
 	if (rst_n == 1'b0) begin // reset
 		o_mode <= MODE_CLOCK;
-	end else begin // when pressing button
-		o_mode <= o_mode + 1'b1; // changing mode
+	end else begin // when pressing button, changing mode
+		o_mode <= o_mode + 1'b1;
 	end
 end
 
 reg		o_position	;
 
+// SWITCH 1: POSITION
 always	@(posedge sw1 or negedge rst_n) begin
 	if (rst_n == 1'b0) begin // reset
 		o_position <= POS_SEC;
 	end else begin // when pressing button
-		if (o_position >= POS_MIN) begin
-			o_position <= POS_SEC;
-		end else begin
-			o_position <= o_position + 1'b1; // changing mode
-		end
+		o_position <= o_position + 1'b1; // changing mode
 	end
 end
 
+// CLK NCO
 wire		clk_1hz		;	// 1Hz clock
 nco		u_nco ( .clk_gen ( clk_1hz ), .num ( 32'd50000000 ), .clk ( clk ), .rst_n ( rst_n ));
 
+// CLK for each MODE
 reg		o_sec_clk	;
 reg		o_min_clk	;
 
@@ -336,7 +307,7 @@ always @(*) begin
 				end
 				POS_MIN : begin // o_min_clk returns "clk_1Hz" or "~i_sw2" clock
 					o_sec_clk = 1'b0;
- 				  o_min_clk = ~sw2; // posedge o_min_clk >> min++;
+ 				  	o_min_clk = ~sw2; // posedge o_min_clk >> min++;
 				end
 			endcase
 		end
@@ -346,7 +317,7 @@ end
 endmodule
 
 // ---------------------------------------------------
-// PD: Top module 
+// Top module 
 // ---------------------------------------------------
 module top_hms_clock ( o_seg, o_seg_dp, o_seg_enb, i_sw0, i_sw1, i_sw2, clk, rst_n );
 
@@ -367,12 +338,21 @@ wire		sec_clk		;
 wire		max_hit_sec	;	// controller's input
 wire		max_hit_min	;	// controller's input
 
-controller 	u_ctrl ( .o_mode ( mode ), .o_position ( position ), .o_min_clk ( min_clk ), .o_sec_clk ( sec_clk ), .i_sw0 ( i_sw0 ) , .i_sw1 ( i_sw1 ), .i_sw2 ( i_sw2 ), .i_max_hit_sec ( max_hit_sec ) , .i_max_hit_min ( max_hit_min ), .clk ( clk ), .rst_n ( rst_n ) );
+/*module controller ( o_min_clk, o_sec_clk, 
+			i_sw0, i_sw1, i_sw2, i_max_hit_sec, clk, rst_n );*/
+
+controller 	u_ctrl ( .o_min_clk ( min_clk ), .o_sec_clk ( sec_clk ),
+		.i_sw0 ( i_sw0 ) , .i_sw1 ( i_sw1 ), .i_sw2 ( i_sw2 ), 
+		.i_max_hit_sec ( max_hit_sec ) , .clk ( clk ), .rst_n ( rst_n ) );
 
 wire	[5:0]	sec		;
 wire	[5:0]	min		;
 
-minsec 		u_minsec ( .o_sec ( sec ), .o_min ( min ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ), .i_sec_clk ( sec_clk ), .i_min_clk ( min_clk ), .clk ( clk ), .rst_n ( rst_n ));
+/*module controller ( o_min_clk, o_sec_clk, 
+			i_sw0, i_sw1, i_sw2, i_max_hit_sec, clk, rst_n );*/
+
+minsec 		u_minsec ( .o_sec ( sec ), .o_min ( min ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ),
+		.i_sec_clk ( sec_clk ), .i_min_clk ( min_clk ), .clk ( clk ), .rst_n ( rst_n ));
 
 wire	[3:0]	sec_left	;
 wire	[3:0]	sec_right	;
@@ -395,12 +375,13 @@ fnd_dec		u3_fun_dec( .o_seg( min_right_seg ), .i_num( min_right ) );
 wire	[41:0]	six_digit_seg	;
 assign		six_digit_seg = { {2{7'd0}}, min_left_seg, min_right_seg, sec_left_seg, sec_right_seg };
 
-led_disp	u_led_disp ( .o_seg ( o_seg ), .o_seg_dp ( o_seg_dp ) , .o_seg_enb ( o_seg_enb ), .i_six_digit_seg( six_digit_seg ), .i_six_dp ( 6'd0 ), .clk ( clk ), .rst_n ( rst_n ));
+led_disp	u_led_disp ( .o_seg ( o_seg ), .o_seg_dp ( o_seg_dp ) , .o_seg_enb ( o_seg_enb ),
+		.i_six_digit_seg( six_digit_seg ), .i_six_dp ( 6'd0 ), .clk ( clk ), .rst_n ( rst_n ));
 
 endmodule
 
 // ---------------------------------------------------
-// PE: Debounce
+// Debounce
 // ---------------------------------------------------
 module debounce ( o_sw, i_sw, clk );
 
