@@ -371,7 +371,7 @@ always	@(posedge clk or negedge rst_n) begin
 			o_timer_end <= 1'b0;
 		end else begin
 			o_timer <= o_timer & i_timer_en; // buzz
-			o_timer_end = 1'b1;
+			o_timer_end <= 1'b1;
 		end
 	end
 end
@@ -501,6 +501,13 @@ always @(*) begin
 			o_min_clk = i_max_hit_sec;
 			o_alarm_sec_clk = 1'b0;
 			o_alarm_min_clk = 1'b0;
+			if (i_timer_end == 1'b1 && sw4 == 1'b1) begin // timer running
+				o_timer_sec_clk = clk_1hz;
+				o_timer_min_clk = i_max_hit_sec;
+			end else begin // sw4 on and timer running
+				o_timer_sec_clk = 1'b0;
+				o_timer_min_clk = 1'b0;
+			end
 		end
 		MODE_SETUP : begin // SETTING mode
 			case (o_position)
@@ -511,6 +518,13 @@ always @(*) begin
 					o_alarm_min_clk = 1'b0;
 					o_timer_sec_clk = 1'b0;
 					o_timer_min_clk = 1'b0;
+					if (i_timer_end == 1'b1 && sw4 == 1'b1) begin // timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = 1'b0;
+						o_timer_min_clk = 1'b0;
+					end
 				end
 				POS_MIN : begin // o_min_clk returns "clk_1Hz" or "~i_sw2" clock
 					o_sec_clk = 1'b0;
@@ -519,6 +533,13 @@ always @(*) begin
 					o_alarm_min_clk = 1'b0;
 					o_timer_sec_clk = 1'b0;
 					o_timer_min_clk = 1'b0;
+					if (i_timer_end == 1'b1 && sw4 == 1'b1) begin // timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = 1'b0;
+						o_timer_min_clk = 1'b0;
+					end
 				end
 			endcase
 		end
@@ -529,16 +550,26 @@ always @(*) begin
 					o_min_clk = i_max_hit_sec;
 					o_alarm_sec_clk = ~sw2;
 					o_alarm_min_clk = 1'b0;
-					o_timer_sec_clk = 1'b0;
-					o_timer_min_clk = 1'b0;
+					if (i_timer_end == 1'b1 && sw4 == 1'b1) begin // timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = 1'b0;
+						o_timer_min_clk = 1'b0;
+					end
 				end
 				POS_MIN : begin
 					o_sec_clk = clk_1hz;
 					o_min_clk = i_max_hit_sec;
 					o_alarm_sec_clk = 1'b0;
 					o_alarm_min_clk = ~sw2;
-					o_timer_sec_clk = 1'b0;
-					o_timer_min_clk = 1'b0;
+					if (i_timer_end == 1'b1 && sw4 == 1'b1) begin // timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = 1'b0;
+						o_timer_min_clk = 1'b0;
+					end
 				end
 			endcase
 		end
