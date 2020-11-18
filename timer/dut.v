@@ -252,16 +252,14 @@ endmodule
 // ------------------------------------------------
 // Hour, Minute, Second total counter
 // ------------------------------------------------
-module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, o_min_hit_sec, o_min_hit_min, o_alarm, o_timer,
+module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, o_alarm, o_timer,
 		i_sec_clk, i_min_clk, i_alarm_sec_clk, i_alarm_min_clk, i_timer_sec_clk, i_timer_min_clk,
 		i_alarm_en, i_timer_en, i_mode, i_position, clk, rst_n );
 
 output	[5:0]	o_sec	;
 output	[5:0]	o_min	;
-output		o_max_hit_sec	;	// CLOCK mode - sec carry clk
-output		o_max_hit_min	;	// CLOCK mode - min carry clk
-output		o_min_hit_sec	;	// TIMER mode - sec carry clk
-output		o_min_hit_min	;	// TIMER mode - min carry clk
+output		o_max_hit_sec	;	// sec carry clk
+output		o_max_hit_min	;	// min carry clk
 output		o_alarm	;		// buzz
 output		o_timer	;		// buzz
 
@@ -273,7 +271,7 @@ input		i_timer_sec_clk	;
 input		i_timer_min_clk	;
 input		i_alarm_en	;
 input		i_timer_en	;
-input		i_mode		;
+input	[1:0]	i_mode		;
 input		i_position	;
 input		clk		;
 input		rst_n		;
@@ -288,11 +286,11 @@ parameter	POS_MIN = 1'b1		;
 // MODE: CLOCK counter
 wire	[5:0]	sec		;
 wire		max_hit_sec	;
-hms_cnt		u0_hms_cnt ( .o_hms_cnt ( sec ), .o_max_hit ( o_max_hit_sec ), .i_max_cnt ( 6'd59 ), .clk ( i_sec_clk ), .rst_n ( rst_n ) ); // sec counter
+hms_cnt		u0_hms_cnt ( .o_hms_cnt ( sec ), .o_max_hit ( max_hit_sec ), .i_max_cnt ( 6'd59 ), .clk ( i_sec_clk ), .rst_n ( rst_n ) ); // sec counter
 
 wire	[5:0]	min		;
 wire		max_hit_min	;
-hms_cnt		u1_hms_cnt ( .o_hms_cnt ( min ), .o_max_hit ( o_max_hit_min ), .i_max_cnt ( 6'd59 ), .clk ( i_min_clk ), .rst_n ( rst_n ) ); // min counter
+hms_cnt		u1_hms_cnt ( .o_hms_cnt ( min ), .o_max_hit ( max_hit_min ), .i_max_cnt ( 6'd59 ), .clk ( i_min_clk ), .rst_n ( rst_n ) ); // min counter
 
 // MODE: ALARM counter
 wire	[5:0]	alarm_sec	;
@@ -303,40 +301,50 @@ hms_cnt		u3_hms_cnt ( .o_hms_cnt ( alarm_min ), .o_max_hit ( ), .i_max_cnt ( 6'd
 
 // MODE: TIMER counter
 wire	[5:0]	timer_sec		;
-wire		max_hit_sec_down	;
-hms_cnt_down	u4_hms_cnt ( .o_hms_cnt ( timer_sec ), .o_max_hit ( max_hit_sec_down ), .i_max_cnt ( 1'd0 ), .clk ( i_timer_sec_clk ), .rst_n ( rst_n ) ); // sec counter
+wire		timer_max_hit_sec	;
+hms_cnt_down	u4_hms_cnt ( .o_hms_cnt ( timer_sec ), .o_min_hit ( timer_max_hit_sec ), .i_min_cnt ( 1'd0 ), .clk ( i_timer_sec_clk ), .rst_n ( rst_n ) ); // sec counter
 
 wire	[5:0]	timer_min		;
-wire		max_hit_min_down	;
-hms_cnt_down	u5_hms_cnt ( .o_hms_cnt ( timer_min ), .o_max_hit ( max_hit_min_down ), .i_max_cnt ( 1'd0 ), .clk ( i_timer_min_clk ), .rst_n ( rst_n ) ); // sec counter
+wire		timer_max_hit_min	;
+hms_cnt_down	u5_hms_cnt ( .o_hms_cnt ( timer_min ), .o_min_hit ( timer_max_hit_min ), .i_min_cnt ( 1'd0 ), .clk ( i_timer_min_clk ), .rst_n ( rst_n ) ); // sec counter
 
 // MUX ( CLOCK | ALARM | TIMER - choice )
 reg	[5:0]	o_sec		;
 reg	[5:0]	o_min		;
+reg		o_max_hit_sec	;
+reg		o_max_hit_min	;
 
 always	@(*) begin
 	case(i_mode)
 		MODE_CLOCK: begin
 			o_sec	= sec;
 			o_min	= min;
+			o_max_hit_sec = max_hit_sec;
+			o_max_hit_min = max_hit_min;
 		end
 		MODE_SETUP: begin
 			o_sec	= sec;
 			o_min	= min;
+			o_max_hit_sec = max_hit_sec;
+			o_max_hit_min = max_hit_min;
 		end
 		MODE_ALARM: begin
 			o_sec = alarm_sec;
 			o_min = alarm_min;
+			o_max_hit_sec = max_hit_sec;
+			o_max_hit_min = max_hit_min;
 		end
 		MODE_TIMER: begin
 			o_sec = timer_sec;
-			o_min = timer_min; 
+			o_min = timer_min;
+			o_max_hit_sec = timer_max_hit_sec;
+			o_max_hit_min = timer_max_hit_min;
 		end
 	endcase
 end
 
 // ALARM
-reg		o_alarm	;
+reg	o_alarm	;
 always	@(posedge clk or negedge rst_n) begin
 	if (rst_n == 1'b0) begin
 		o_alarm <= 1'b0;
@@ -350,10 +358,10 @@ always	@(posedge clk or negedge rst_n) begin
 end
 
 // TIMER
-reg		o_timer	;
+reg	o_timer	;
 always	@(posedge clk or negedge rst_n) begin
 	if (rst_n == 1'b0) begin
-		o_alarm <= 1'b0;
+		o_timer <= 1'b0;
 	end else begin
 		if ((timer_sec == 1'b0) && (timer_min == 1'b0)) begin
 			o_timer <= 1'b1 & i_timer_en;
