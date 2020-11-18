@@ -242,7 +242,7 @@ always @(posedge clk or negedge rst_n) begin
 			o_hms_cnt <= 6'd59;
 			o_min_hit <= 1'b1;
 		end else begin // 0~59
-			o_hmsc_cnt <= o_hms_cnt - 1'b1;
+			o_hms_cnt <= o_hms_cnt - 1'b1;
 			o_min_hit <= 1'b0;
 		end
 	end
@@ -262,8 +262,8 @@ output		o_max_hit_sec	;	// CLOCK mode - sec carry clk
 output		o_max_hit_min	;	// CLOCK mode - min carry clk
 output		o_min_hit_sec	;	// TIMER mode - sec carry clk
 output		o_min_hit_min	;	// TIMER mode - min carry clk
-output		o_alarm	;
-output		o_timer	;
+output		o_alarm	;		// buzz
+output		o_timer	;		// buzz
 
 input		i_sec_clk	;
 input		i_min_clk	;
@@ -425,7 +425,7 @@ always	@(posedge sw0 or negedge rst_n) begin
 	if (rst_n == 1'b0) begin // reset
 		o_mode <= MODE_CLOCK;
 	end else begin // when pressing button, changing mode
-		if (o_mode >= MODE_ALARM) begin
+		if (o_mode >= MODE_TIMER) begin
 			o_mode <= MODE_CLOCK;
 		end else begin
 			o_mode <= o_mode + 1'b1;
@@ -571,7 +571,7 @@ input		i_sw4		;
 input		clk		;
 input		rst_n		;
 
-wire		mode		;
+wire	[1:0]	mode		;
 wire		position	;
 wire		min_clk		;
 wire		sec_clk		;
