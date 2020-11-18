@@ -196,6 +196,9 @@ always @(posedge clk or negedge rst_n) begin
 end
 endmodule
 
+// ---------------------------------------------------
+// PA: Hour, Minute, Second total counter
+// ---------------------------------------------------
 module minsec ( o_alarm, o_max_hit_sec, o_max_hit_min, o_sec, o_min,
 		i_alarm_en, i_alarm_min_clk, i_alarm_sec_clk, i_sec_clk, i_min_clk, i_mode, i_position, clk, rst_n );
 
