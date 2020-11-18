@@ -252,7 +252,7 @@ endmodule
 // ------------------------------------------------
 // Hour, Minute, Second total counter
 // ------------------------------------------------
-module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, o_alarm, o_timer,
+module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, o_alarm, o_timer, o_timer_end, 
 		i_sec_clk, i_min_clk, i_alarm_sec_clk, i_alarm_min_clk, i_timer_sec_clk, i_timer_min_clk,
 		i_alarm_en, i_timer_en, i_mode, i_position, clk, rst_n );
 
@@ -262,6 +262,7 @@ output		o_max_hit_sec	;	// sec carry clk
 output		o_max_hit_min	;	// min carry clk
 output		o_alarm	;		// buzz
 output		o_timer	;		// buzz
+output		o_timer_end	;
 
 input		i_sec_clk	;
 input		i_min_clk	;
@@ -359,14 +360,18 @@ end
 
 // TIMER
 reg	o_timer	;
+reg	o_timer_end	;
 always	@(posedge clk or negedge rst_n) begin
 	if (rst_n == 1'b0) begin
 		o_timer <= 1'b0;
+		o_timer_end <= 1'b1;
 	end else begin
 		if ((timer_sec == 1'b0) && (timer_min == 1'b0)) begin
-			o_timer <= 1'b1 & i_timer_en;
+			o_timer <= 1'b1 & i_timer_en; // buzz
+			o_timer_end <= 1'b0;
 		end else begin
-			o_timer <= o_timer & i_timer_en;
+			o_timer <= o_timer & i_timer_en; // buzz
+			o_timer_end = 1'b1;
 		end
 	end
 end
@@ -377,7 +382,7 @@ endmodule
 // Controller for sec_clk, min_clk & mode/position
 // ---------------------------------------------------
 module controller ( o_mode, o_position, o_min_clk, o_sec_clk, o_alarm_sec_clk, o_alarm_min_clk, o_alarm_en, o_timer_sec_clk, o_timer_min_clk, o_timer_en,
-			i_sw0, i_sw1, i_sw2, i_sw3, i_sw4, i_max_hit_sec, i_max_hit_min, clk, rst_n );
+			i_sw0, i_sw1, i_sw2, i_sw3, i_sw4, i_max_hit_sec, i_max_hit_min, i_timer_end, clk, rst_n );
 
 output	[1:0]	o_mode		;
 output		o_position	;
@@ -392,6 +397,7 @@ output		o_timer_en	;
 
 input		i_max_hit_sec	;
 input		i_max_hit_min	;
+input		i_timer_end	;
 
 input		i_sw0		; // switch 0
 input		i_sw1		; // switch 1
@@ -537,22 +543,32 @@ always @(*) begin
 			endcase
 		end
 		MODE_TIMER : begin // TIMER mode
-			case(o_position)
+			case(o_position) // sw4 off(on_timer_en == 1'b1) >> SETUP MODE clk, sw4 on(on_timer_en == 1'b0) >> CLOCK MODE clk
 				POS_SEC : begin 
 					o_sec_clk = clk_1hz;
 					o_min_clk = i_max_hit_sec;
 					o_alarm_sec_clk = 1'b0;
 					o_alarm_min_clk = 1'b0;
-					o_timer_sec_clk = ~sw2;
-					o_timer_min_clk = 1'b0;
+					if (o_timer_en == 1'b0 || i_timer_end == 1'b0) begin // sw4 off or timer end
+						o_timer_sec_clk = ~sw2;
+						o_timer_min_clk = 1'b0;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end
 				end
 				POS_MIN : begin
 					o_sec_clk = clk_1hz;
 					o_min_clk = i_max_hit_sec;
 					o_alarm_sec_clk = 1'b0;
 					o_alarm_min_clk = 1'b0;
-					o_timer_sec_clk = 1'b0;
-					o_timer_min_clk = ~sw2;
+					if (o_timer_en == 1'b0 || i_timer_end == 1'b0) begin // sw4 off or timer end
+						o_timer_sec_clk = 1'b0;
+						o_timer_min_clk = ~sw2;
+					end else begin // sw4 on and timer running
+						o_timer_sec_clk = clk_1hz;
+						o_timer_min_clk = i_max_hit_sec;
+					end
 				end
 			endcase
 		end
@@ -591,6 +607,7 @@ wire		alarm_en	;
 wire		timer_sec_clk	;
 wire		timer_min_clk	;
 wire		timer_en	;
+wire		timer_end	;
 
 /*
 module controller ( o_mode, o_position, o_min_clk, o_sec_clk, o_alarm_sec_clk, o_alarm_min_clk, o_alarm_en, o_timer_sec_clk, o_timer_min_clk, o_timer_en,
@@ -600,18 +617,14 @@ controller 	u_ctrl ( .o_mode ( mode ), .o_position ( position ), .o_min_clk ( mi
 		.o_alarm_sec_clk ( alarm_sec_clk ), .o_alarm_min_clk ( alarm_min_clk ), .o_alarm_en ( alarm_en ), 
 		.o_timer_sec_clk ( timer_sec_clk ), .o_timer_min_clk ( timer_min_clk ), .o_timer_en ( timer_en ), 
 		.i_sw0 ( i_sw0 ) , .i_sw1 ( i_sw1 ), .i_sw2 ( i_sw2 ), .i_sw3 ( i_sw3 ), .i_sw4 ( i_sw4 ),
-		.i_max_hit_sec ( max_hit_sec ) , .i_max_hit_min ( max_hit_min ), .clk ( clk ), .rst_n ( rst_n ) );
+		.i_max_hit_sec ( max_hit_sec ) , .i_max_hit_min ( max_hit_min ), .i_timer_end ( timer_end ), .clk ( clk ), .rst_n ( rst_n ) );
 
 wire	[5:0]	sec		;
 wire	[5:0]	min		;
 wire		alarm		;
 wire		timer		;
 
-/*module minsec ( o_sec, o_min, o_max_hit_sec, o_max_hit_min, o_alarm, o_timer,
-		i_sec_clk, i_min_clk, i_alarm_sec_clk, i_alarm_min_clk, i_timer_sec_clk, i_timer_min_clk,
-		i_alarm_en, i_timer_en, i_mode, i_position, clk, rst_n );*/
-
-minsec 		u_minsec ( .o_alarm ( alarm ), .o_timer ( timer ), .o_sec ( sec ), .o_min ( min ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ),
+minsec 		u_minsec ( .o_alarm ( alarm ), .o_timer ( timer ), .o_sec ( sec ), .o_min ( min ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ), .o_timer_end ( timer_end ), 
 		.i_alarm_en ( alarm_en ), .i_timer_en ( timer_en ), .i_alarm_min_clk ( alarm_min_clk ), .i_alarm_sec_clk ( alarm_sec_clk ), .i_timer_min_clk ( timer_min_clk ), .i_timer_sec_clk ( timer_sec_clk ),
 		.i_sec_clk ( sec_clk ), .i_min_clk ( min_clk ), .i_mode ( mode ), .i_position ( position ), .clk ( clk ), .rst_n ( rst_n ));
 
@@ -639,7 +652,7 @@ assign		six_digit_seg = { {2{7'd0}}, min_left_seg, min_right_seg, sec_left_seg, 
 led_disp	u_led_disp ( .o_seg ( o_seg ), .o_seg_dp ( o_seg_dp ) , .o_seg_enb ( o_seg_enb ),
 		.i_six_digit_seg( six_digit_seg ), .i_six_dp ( 6'd0 ), .clk ( clk ), .rst_n ( rst_n ));
 
-buzz		u_buzz ( .o_buzz ( o_alarm ), .i_buzz_en ( alarm ), .clk ( clk ), .rst_n ( rst_n ) );
+buzz		u_buzz0 ( .o_buzz ( o_alarm ), .i_buzz_en ( alarm|timer ), .clk ( clk ), .rst_n ( rst_n ) );
 
 endmodule
 
