@@ -365,6 +365,7 @@ always	@(cnt_common_node or cnt_blink_node) begin
 			endcase
 			end
 		endcase
+	end
 end
 
 reg		o_seg_dp	;
