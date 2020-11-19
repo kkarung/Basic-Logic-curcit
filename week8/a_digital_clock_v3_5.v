@@ -2,7 +2,7 @@
 //             digital clock v4
 // Assignment: week8 practice P
 // Course: practice in digital logic design
-// clock (min:sec), changing mode ok, debounce, alarm
+// clock (min:sec), changing mode ok, debounce, alarm (5sec auto off)
 // --------------------- list ---------------------
 // 01. NCO (1M Hz) << week5 P1
 // 02. 0~59 Counter << week5 P1
