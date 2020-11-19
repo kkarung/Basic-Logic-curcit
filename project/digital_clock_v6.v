@@ -1105,7 +1105,7 @@ wire		timer		;
 		i_sec_clk, i_min_clk, i_hour_clk, i_alarm_sec_clk, i_alarm_min_clk, i_alarm_hour_clk, i_timer_sec_clk, i_timer_min_clk, i_timer_hour_clk, 
 		i_alarm_en, i_timer_en, i_mode, i_position, clk, rst_n );*/
 
-minsec 		u_minsec ( .o_sec ( sec ), .o_min ( min ), .o_hour ( hour ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ),
+hourminsec 		u_hourminsec ( .o_sec ( sec ), .o_min ( min ), .o_hour ( hour ), .o_max_hit_sec ( max_hit_sec ), .o_max_hit_min ( max_hit_min ),
 		.o_alarm ( alarm ), .o_timer ( timer ), .o_timer_end ( timer_end ), 
 		.i_sec_clk ( sec_clk ), .i_min_clk ( min_clk ), .i_hour_clk ( hour_clk ),
 		.i_alarm_sec_clk ( alarm_sec_clk ), .i_alarm_min_clk ( alarm_min_clk ), .i_alarm_hour_clk ( alarm_hour_clk ),
