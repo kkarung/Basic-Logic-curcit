@@ -692,6 +692,7 @@ parameter SIGNAL0 = 32'hFD708F;
 parameter SIGNAL1 = 32'hFD08F7;
 parameter SIGNAL2 = 32'hFD8877;
 parameter SIGNAL3 = 32'hFD48B7;
+parameter SIGNAL4 = 32'hFD28D7;
 
 //0	(0xFD708F)
 //1	(0XFD08F7)
