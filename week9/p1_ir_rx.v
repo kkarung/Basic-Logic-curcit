@@ -2,7 +2,7 @@
 //             ir sensor remote control
 // Assignment: week 9
 // Course: practice in digital logic design
-// ir sensor remote controll >> value display return
+// return pressed controller button value at FPGA display
 // --------------------- list ---------------------
 // 01. NCO (1M Hz) << week5 P1
 // 02. FND decoder << week5 P1
