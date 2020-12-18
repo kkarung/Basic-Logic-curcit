@@ -1,7 +1,7 @@
 // ---------------------------------------------------------
 //                4-bit Adder Design
 // Course: practice in digital logic design
-// Assignment: week2 practice 02 P2A, P2B
+// Assignment: week2 practice P2A, P2B
 // --------------------- list ---------------------
 // 1-bit Full-Adder (Dataflow w/ Operator)
 // P2A: 4-bit Adder (Heirarchical design, 1-bit FA x 4)
